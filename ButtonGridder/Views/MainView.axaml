@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:id="clr-namespace:Avalonia.Xaml.Interactions.Draggable;assembly=Avalonia.Xaml.Interactions.Draggable"
+             xmlns:vm="clr-namespace:ButtonGridder.ViewModels"
+             xmlns:models="clr-namespace:ButtonGridder.Models"
+             xmlns:v="clr-namespace:ButtonGridder.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ButtonGridder.Views.MainView"
+             x:DataType="vm:MainViewModel">
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <UserControl.Styles>
+        <StyleInclude Source="avares://Avalonia.Xaml.Interactions.Draggable/Styles.axaml" />
+        <Style Selector="ItemsControl > ContentPresenter" x:DataType="models:TriggerButtonModel">
+            <Setter Property="(Grid.Column)" Value="{Binding GridColumn}" />
+            <Setter Property="(Grid.Row)" Value="{Binding GridRow}" />
+            <Setter Property="(Grid.ColumnSpan)" Value="{Binding GridColumnSpan}" />
+            <Setter Property="(Grid.RowSpan)" Value="{Binding GridRowSpan}" />
+        </Style>
+    </UserControl.Styles>
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="models:TriggerButtonModel">
+            <Border IsHitTestVisible="True" 
+                    Background="Transparent">
+                
+                <Button Margin="5"
+                        CornerRadius="6"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        FontFamily="{Binding TitleFontFamily}"
+                        FontSize="{Binding TitleFontSize}"
+                        Foreground="{Binding TitleColorBrush}"
+                        Background="{Binding BackgroundColorBrush}"
+                        Content="{Binding Title}"
+                        Command="{Binding Trigger}"/>
+                    
+                <Border.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuItem Header="Edit"
+                                  IsEnabled="{Binding IsEditing}"
+                                  Command="{Binding Edit}"
+                                  CommandParameter="{Binding $parent[Window]}"/>
+                        <MenuItem Header="Remove"
+                                  IsEnabled="{Binding IsEditing}"
+                                  Command="{Binding Delete}"/>
+                    </MenuFlyout>
+                </Border.ContextFlyout>
+            </Border>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+    
+    <Grid RowDefinitions="Auto, *">
+        
+        <Menu Grid.Row="0">
+            <MenuItem Header="Grids">
+                <MenuItem Header="Add Grid"
+                          Command="{Binding AddButtonGrid}"/>
+                <MenuItem Header="Save Grid"
+                          Command="{Binding SaveButtonGrid}"
+                          CommandParameter="{Binding $parent[Window]}"/>
+                <MenuItem Header="Save All Grids"
+                          Command="{Binding SaveButtonGridCollection}"
+                          CommandParameter="{Binding $parent[Window]}"/>
+                <MenuItem Header="Load Grid"
+                          Command="{Binding LoadButtonGrid}"
+                          CommandParameter="{Binding $parent[Window]}"/>
+                <MenuItem Header="Load Grid Collection"
+                          Command="{Binding LoadButtonGridCollection}"
+                          CommandParameter="{Binding $parent[Window]}"/>
+            </MenuItem>
+            <MenuItem Header="Toggle Editing"
+                      Command="{Binding EnableEditing}"/>
+        </Menu>
+        
+        <TabControl Grid.Row="1"
+                    Classes="draggable"
+                    ItemsSource="{Binding ButtonGrids}"
+                    SelectedValue="{Binding SelectedButtonGrid}">
+            <TabControl.ItemTemplate>
+                <DataTemplate DataType="vm:ButtonGridViewModel">
+                    <StackPanel Spacing="5" 
+                                Orientation="Horizontal">
+                        <TextBlock Name="NameText"
+                                   DoubleTapped="NameText_OnDoubleTapped"
+                                   Text="{Binding Title}"/>
+                        <TextBox Name="EditNameTextBox"
+                                 IsVisible="False"
+                                 KeyDown="EditNameTextBox_OnKeyDown"
+                                 LostFocus="EditNameTextBox_OnLostFocus"
+                                 Text="{Binding Title}"/>
+                        <Button VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                Content="X"
+                                FontSize="10"
+                                IsVisible="{Binding IsEditing}"
+                                Command="{Binding Delete}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="vm:ButtonGridViewModel">
+                    <v:ButtonGridView HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  DataContext="{Binding }"/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </Grid>
+
+</UserControl>

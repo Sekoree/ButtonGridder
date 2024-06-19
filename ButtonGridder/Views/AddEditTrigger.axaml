@@ -1,0 +1,169 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:ButtonGridder.Models"
+        xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="950"
+        x:Class="ButtonGridder.Views.AddEditTrigger"
+        Title="AddEditTrigger"
+        Width="400"
+        Height="500"
+        x:DataType="models:TriggerButtonModel">
+
+    <Design.DataContext>
+        <models:TriggerButtonModel />
+    </Design.DataContext>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+        <StackPanel Orientation="Vertical">
+            <Expander Header="Title / Position"
+                      HorizontalAlignment="Stretch"
+                      IsExpanded="False">
+                <Grid ColumnDefinitions="*, *"
+                      RowDefinitions="Auto, Auto, Auto">
+                    <TextBox Grid.Column="0"
+                             Grid.ColumnSpan="2"
+                             Grid.Row="0"
+                             Text="{Binding Title}" />
+                    <Label Grid.Column="0"
+                           Grid.Row="1"
+                           Target="GridColumnSlider"
+                           Margin="0,10,0,0"
+                           Content="Column" />
+                    <Slider Grid.Column="0"
+                            Grid.Row="1"
+                            Name="GridColumnSlider"
+                            Padding="0,20,5,0"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="1"
+                            TickPlacement="BottomRight"
+                            Value="{Binding GridColumn}"
+                            Maximum="{Binding MaxGridColumn}" />
+                    <Label Grid.Column="1"
+                           Grid.Row="1"
+                           Target="GridColumnSpanSlider"
+                           Margin="0,10,0,0"
+                           Content="Width" />
+                    <Slider Grid.Column="1"
+                            Grid.Row="1"
+                            Name="GridColumnSpanSlider"
+                            Padding="0,20,0,0"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="1"
+                            TickPlacement="BottomRight"
+                            Value="{Binding GridColumnSpan}"
+                            Minimum="1"
+                            Maximum="{Binding MaxGridColumn}" />
+                    <Label Grid.Column="0"
+                           Grid.Row="2"
+                           Target="GridRowSlider"
+                           Margin="0,10,0,0"
+                           Content="Row" />
+                    <Slider Grid.Column="0"
+                            Grid.Row="2"
+                            Name="GridRowSlider"
+                            Padding="0,20,5,0"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="1"
+                            TickPlacement="BottomRight"
+                            Value="{Binding GridRow}"
+                            Maximum="{Binding MaxGridRow}" />
+                    <Label Grid.Column="1"
+                           Grid.Row="2"
+                           Target="GridRowSpanSlider"
+                           Margin="0,10,0,0"
+                           Content="Height" />
+                    <Slider Grid.Column="1"
+                            Grid.Row="2"
+                            Name="GridRowSpanSlider"
+                            Padding="0,20,0,0"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="1"
+                            TickPlacement="BottomRight"
+                            Value="{Binding GridRowSpan}"
+                            Maximum="{Binding MaxGridRow}"
+                            Minimum="1" />
+                </Grid>
+            </Expander>
+            <Expander Header="Colors / Font"
+                      HorizontalAlignment="Stretch"
+                      IsExpanded="False">
+                <Grid ColumnDefinitions="*,*,2*"
+                      RowDefinitions="Auto,Auto,Auto, Auto">
+                    <Label Grid.Column="0"
+                           Grid.Row="0"
+                           Target="BackgroundColorPicker"
+                           Margin="5,0"
+                           Content="Background" />
+                    <ColorPicker Grid.Column="0"
+                                 Grid.Row="1"
+                                 Margin="5,0"
+                                 HorizontalAlignment="Left"
+                                 Name="BackgroundColorPicker"
+                                 Color="{Binding BackgroundPickerColor}" />
+                    <Label Grid.Column="1"
+                           Grid.Row="0"
+                           Target="ForegroundColorPicker"
+                           Margin="5,0"
+                           Content="Font Color" />
+                    <ColorPicker Grid.Column="1"
+                                 Grid.Row="1"
+                                 Margin="5,0"
+                                 HorizontalAlignment="Left"
+                                 Name="ForegroundColorPicker"
+                                 Color="{Binding TitleColor}" />
+                    <Label Grid.Column="2"
+                           Grid.Row="0"
+                           Target="FontSizeUpDown"
+                           Margin="5,0"
+                           Content="Font Size" />
+                    <NumericUpDown Grid.Column="2"
+                                   Grid.Row="1"
+                                   Margin="5,0"
+                                   Name="FontSizeUpDown"
+                                   Increment="1"
+                                   Minimum="0"
+                                   Maximum="100"
+                                   ClipValueToMinMax="True"
+                                   ParsingNumberStyle="Integer"
+                                   Value="{Binding TitleFontSize}" />
+
+                    <Label Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           Grid.Row="2"
+                           Margin="5,15,5,0"
+                           Content="Font" />
+                    <ComboBox Grid.Column="0"
+                              Grid.ColumnSpan="3"
+                              Grid.Row="3"
+                              Margin="5"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding Fonts}"
+                              SelectedItem="{Binding TitleFontFamily}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="FontFamily">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+            </Expander>
+            <Expander Header="URL / Content"
+                      HorizontalAlignment="Stretch"
+                      IsExpanded="True">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                    <Label Grid.Row="0"
+                           Target="UrlTextBox"
+                           Margin="5,0"
+                           Content="URL" />
+                    <TextBox Grid.Row="1"
+                             Margin="5,0"
+                             HorizontalAlignment="Stretch"
+                             Name="UrlTextBox"
+                             Text="{Binding TriggerUrl}" />
+                </Grid>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
