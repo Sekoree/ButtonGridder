@@ -7,7 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="950"
         x:Class="ButtonGridder.Views.AddEditTrigger"
         Title="AddEditTrigger"
-        Width="400"
+        Width="600"
         Height="500"
         x:DataType="models:TriggerButtonModel">
 
@@ -16,10 +16,14 @@
     </Design.DataContext>
 
     <ScrollViewer HorizontalScrollBarVisibility="Auto">
-        <StackPanel Orientation="Vertical">
-            <Expander Header="Title / Position"
+        <Grid ColumnDefinitions="*, *"
+              RowDefinitions="Auto, Auto">
+            <Expander Grid.Column="0"
+                      Grid.Row="0"
+                      Header="Title / Position"
                       HorizontalAlignment="Stretch"
-                      IsExpanded="False">
+                      VerticalAlignment="Stretch"
+                      IsExpanded="True">
                 <Grid ColumnDefinitions="*, *"
                       RowDefinitions="Auto, Auto, Auto">
                     <TextBox Grid.Column="0"
@@ -86,9 +90,12 @@
                             Minimum="1" />
                 </Grid>
             </Expander>
-            <Expander Header="Colors / Font"
+            <Expander Grid.Column="1"
+                      Grid.Row="0"
+                      Header="Colors / Font"
                       HorizontalAlignment="Stretch"
-                      IsExpanded="False">
+                      VerticalAlignment="Stretch"
+                      IsExpanded="True">
                 <Grid ColumnDefinitions="*,*,2*"
                       RowDefinitions="Auto,Auto,Auto, Auto">
                     <Label Grid.Column="0"
@@ -149,21 +156,123 @@
                     </ComboBox>
                 </Grid>
             </Expander>
-            <Expander Header="URL / Content"
+            
+            <Expander Grid.Column="0"
+                      Grid.Row="1"
+                      Header="URL / Content"
                       HorizontalAlignment="Stretch"
-                      IsExpanded="True">
-                <Grid RowDefinitions="Auto,Auto,Auto,Auto">
-                    <Label Grid.Row="0"
+                      VerticalAlignment="Stretch">
+                <Grid ColumnDefinitions="*,*"
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                    <Label Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Grid.Row="0"
                            Target="UrlTextBox"
-                           Margin="5,0"
+                           Margin="0,0,5,0"
                            Content="URL" />
-                    <TextBox Grid.Row="1"
-                             Margin="5,0"
+                    <TextBox Grid.Column="0"
+                             Grid.ColumnSpan="2"
+                             Grid.Row="1"
+                             Margin="0,0,5,0"
                              HorizontalAlignment="Stretch"
                              Name="UrlTextBox"
                              Text="{Binding TriggerUrl}" />
+
+                    <Label Grid.Column="0"
+                           Grid.Row="2"
+                           Target="AddContentCheckBox"
+                           Margin="0,15,0,0"
+                           Content="Content" />
+                    <CheckBox Grid.Column="0"
+                              Grid.Row="3"
+                              Margin="0,0,5,0"
+                              Name="AddContentCheckBox"
+                              IsChecked="{Binding HasBody}" />
+
+                    <Label Grid.Column="1"
+                           Grid.Row="2"
+                           Target="HttpMethodComboBox"
+                           Margin="0,15,0,0"
+                           Content="Http Method" />
+                    <ComboBox Grid.Column="1"
+                              Grid.Row="3"
+                              HorizontalAlignment="Stretch"
+                              Margin="0,0,5,0"
+                              Name="HttpMethodComboBox"
+                              ItemsSource="{Binding HttpMethods}"
+                              SelectedItem="{Binding TriggerHttpMethod}" />
+
+                    <Label Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Grid.Row="4"
+                           IsVisible="{Binding HasBody}"
+                           Target="ContentTypeTextBox"
+                           Margin="0,15,0,0"
+                           Content="Content Type" />
+                    <TextBox Grid.Column="0"
+                             Grid.ColumnSpan="2"
+                             Grid.Row="5"
+                             IsVisible="{Binding HasBody}"
+                             Margin="0,0,5,0"
+                             HorizontalAlignment="Stretch"
+                             Name="ContentTypeTextBox"
+                             Text="{Binding TriggerBodyType}" />
+
+                    <Label Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Grid.Row="6"
+                           IsVisible="{Binding HasBody}"
+                           Target="ContentTextBox"
+                           Margin="0,15,0,0"
+                           Content="Content" />
+
+                    <avaloniaEdit:TextEditor Grid.Column="0"
+                                             Grid.ColumnSpan="2"
+                                             Grid.Row="7"
+                                             IsVisible="{Binding HasBody}"
+                                             Margin="0,0,5,0"
+                                             Height="100"
+                                             Name="ContentTextBox"
+                                             ShowLineNumbers="True"
+                                             Background="{DynamicResource TextControlBackground}"
+                                             Document="{Binding TriggerBody}" />
                 </Grid>
             </Expander>
-        </StackPanel>
+            <Expander Grid.Column="1"
+                      Grid.Row="1"
+                      Header="Debug"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                    <Button Grid.Row="0"
+                            Content="Test Button"
+                            Command="{Binding Trigger}"/>
+                    
+                    <Label Grid.Row="1"
+                           Target="ResponseCodeTextBlock"
+                           Margin="0,15,0,0"
+                           Content="Response Code" />
+                    <TextBlock Grid.Row="2"
+                               Name="ResponseCodeTextBlock"
+                               Text="{Binding TriggerLastResponseCode}" />
+                    
+                    <Label Grid.Row="3"
+                            Target="ResponseContentTextBlock"
+                            Margin="0,15,0,0"
+                            Content="Response Content" />
+                    <TextBlock Grid.Row="4"
+                               Name="ResponseContentTextBlock"
+                               Text="{Binding TriggerLastResponse}" />
+                    
+                    <Label Grid.Row="5"
+                            Target="ResponseTimeTextBlock"
+                            Margin="0,15,0,0"
+                            Content="Response Time" />
+                    <TextBlock Grid.Row="6"
+                               Name="ResponseTimeTextBlock"
+                               Text="{Binding TriggerLastResponseTimes}" />
+                </Grid>
+            </Expander>
+        </Grid>
     </ScrollViewer>
 </Window>

@@ -3,10 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Data.Core;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings;
@@ -57,18 +55,11 @@ public partial class ButtonGridViewModel : ViewModelBase
             return minRows;
         }
     }
-    
-    private readonly SolidColorBrush _backgroundColorBrush = new(Color.Parse("#333"));
-    private readonly SolidColorBrush _titleColorBrush = new(Color.Parse("#FFF"));
 
-    public ButtonGridViewModel(ObservableCollection<ButtonGridViewModel> parent, string title = "Untitled", SolidColorBrush? backgroundColorBrush = null, SolidColorBrush? titleColorBrush = null)
+    public ButtonGridViewModel(ObservableCollection<ButtonGridViewModel> parent, string title = "Untitled")
     {
         _parentCollection = parent;
         Title = title;
-        if (backgroundColorBrush is not null)
-            _backgroundColorBrush = backgroundColorBrush;
-        if (titleColorBrush is not null)
-            _titleColorBrush = titleColorBrush;
         var path = new CompiledBindingPathBuilder();
         path.SetRawSource(Buttons);
         var propInfo = 
@@ -95,6 +86,8 @@ public partial class ButtonGridViewModel : ViewModelBase
                 {
                     ButtonGrid.RowDefinitions.Add(new RowDefinition());
                 }
+                ButtonControl.InvalidateVisual();
+                ButtonGrid.InvalidateVisual();
             };
             return ButtonGrid;
         });
@@ -135,9 +128,10 @@ public partial class ButtonGridViewModel : ViewModelBase
 
     public async Task AddButton(Window parentWindow)
     {
-        var newButton = new TriggerButtonModel(Buttons, ButtonGrid, _backgroundColorBrush, _titleColorBrush)
+        var newButton = new TriggerButtonModel(Buttons, ButtonGrid)
         {
-            TriggerUrl = BaseUrl
+            TriggerUrl = BaseUrl,
+            IsEditing = IsEditing
         };
         Buttons.Add(newButton);
         await newButton.Edit(parentWindow);

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using AvaloniaEdit.Utils;
@@ -19,17 +18,15 @@ public partial class MainViewModel : ViewModelBase
     public ObservableCollection<ButtonGridViewModel> ButtonGrids { get; } = new();
 
     [ObservableProperty] private ButtonGridViewModel? _selectedButtonGrid;
-    
-    private SolidColorBrush _backgroundColorBrush = new(Color.Parse("#333"));
-    private SolidColorBrush _titleColorBrush = new(Color.Parse("#FFF"));
-    
+
     private bool _isEditing = false;
-    
+
     public MainViewModel()
     {
         var btnGrid = new ButtonGridViewModel(ButtonGrids);
         ButtonGrids.Add(btnGrid);
         SelectedButtonGrid = btnGrid;
+            
     }
 
     public void EnableEditing()
@@ -104,9 +101,8 @@ public partial class MainViewModel : ViewModelBase
         await using var content = File.Create(path);
         var gridData = ButtonGrids.Select(ButtonGrid.ToSerializable).ToList();
         await JsonSerializer.SerializeAsync(content, gridData, ButtonGridJsonContext.Default.ListButtonGrid);
-        
     }
-    
+
     public async Task LoadButtonGrid(Window parent)
     {
         var fpo = new FilePickerOpenOptions()
@@ -138,7 +134,7 @@ public partial class MainViewModel : ViewModelBase
                     await JsonSerializer.DeserializeAsync(content, ButtonGridJsonContext.Default.ButtonGrid);
                 if (gridData is null)
                     continue;
-                var asModel = ButtonGrid.ToModel(gridData, ButtonGrids, _backgroundColorBrush, _titleColorBrush);
+                var asModel = ButtonGrid.ToModel(gridData, ButtonGrids);
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     ButtonGrids.Add(asModel);
@@ -184,7 +180,8 @@ public partial class MainViewModel : ViewModelBase
                         ButtonGridJsonContext.Default.ListButtonGrid);
                 if (gridData is null)
                     continue;
-                var asModels = gridData.Select(x => ButtonGrid.ToModel(x, ButtonGrids, _backgroundColorBrush, _titleColorBrush));
+                var asModels = gridData.Select(x =>
+                    ButtonGrid.ToModel(x, ButtonGrids));
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     var buttonGridViewModels = asModels as ButtonGridViewModel[] ?? asModels.ToArray();

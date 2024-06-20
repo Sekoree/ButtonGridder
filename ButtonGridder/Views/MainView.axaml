@@ -36,6 +36,7 @@
                         HorizontalContentAlignment="Center"
                         VerticalAlignment="Stretch"
                         VerticalContentAlignment="Center"
+                        IsEnabled="{Binding !IsEditing}"
                         FontFamily="{Binding TitleFontFamily}"
                         FontSize="{Binding TitleFontSize}"
                         Foreground="{Binding TitleColorBrush}"

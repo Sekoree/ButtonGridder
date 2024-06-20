@@ -30,8 +30,8 @@ public partial class MainView : UserControl
 
     private void EditNameTextBox_OnKeyDown(object? sender, KeyEventArgs e)
     {
-        //reverse the process of the NameText_OnDoubleTapped method when the Enter key is pressed
-        if (e.Key != Key.Enter) 
+        //reverse the process of the NameText_OnDoubleTapped method when the Enter key or ESC key is pressed
+        if (e.Key != Key.Enter && e.Key != Key.Escape)
             return;
         var textBox = sender as TextBox;
         if (textBox == null) return;

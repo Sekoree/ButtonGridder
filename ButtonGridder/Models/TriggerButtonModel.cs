@@ -119,12 +119,28 @@ public partial class TriggerButtonModel : ObservableObject
         HttpMethod.Connect
     ];
 
-    public TriggerButtonModel(ObservableCollection<TriggerButtonModel> parentCollection, Grid parentGrid, SolidColorBrush defaultBackground, SolidColorBrush defaultTitle)
+    public TriggerButtonModel(ObservableCollection<TriggerButtonModel> parentCollection, Grid parentGrid)
     {
         _parentCollection = parentCollection;
         _parentGrid = parentGrid;
-        BackgroundPickerColor = defaultBackground.Color;
-        TitleColor = defaultTitle.Color;
+        if (Application.Current?.ActualThemeVariant == ThemeVariant.Light)
+        {
+            BackgroundPickerColor = Color.Parse("#33000000");
+            TitleColor = Colors.Black;
+        }
+        else
+        {
+            BackgroundPickerColor = Color.Parse("#33FFFFFF");
+            TitleColor = Colors.White;
+        }
+    }
+
+    public TriggerButtonModel(ObservableCollection<TriggerButtonModel> parentCollection, Grid parentGrid, Color background, Color title)
+    {
+        _parentCollection = parentCollection;
+        _parentGrid = parentGrid;
+        BackgroundPickerColor = background;
+        TitleColor = title;
     }
 
     [Obsolete("This constructor is for design-time only", true)]
