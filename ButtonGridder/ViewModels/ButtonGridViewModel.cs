@@ -8,7 +8,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data.Core;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings;
-using Avalonia.Media;
 using ButtonGridder.Entities;
 using ButtonGridder.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -105,7 +104,7 @@ public partial class ButtonGridViewModel : ViewModelBase
         if (value < MinGridColumns)
             GridColumns = MinGridColumns;
         var oldValue = ButtonGrid.ColumnDefinitions.Count;
-        if (oldValue > value)
+        if (oldValue > value && Buttons.Max(x => x.GridColumn) < value)
             for (var i = oldValue - 1; i >= value; i--)
                 ButtonGrid.ColumnDefinitions.RemoveAt(i);
         else
@@ -118,7 +117,7 @@ public partial class ButtonGridViewModel : ViewModelBase
         if (value < MinGridRows)
             GridRows = MinGridRows;
         var oldValue = ButtonGrid.RowDefinitions.Count;
-        if (oldValue > value)
+        if (oldValue > value && Buttons.Max(x => x.GridRow) < value)
             for (var i = oldValue - 1; i >= value; i--)
                 ButtonGrid.RowDefinitions.RemoveAt(i);
         else

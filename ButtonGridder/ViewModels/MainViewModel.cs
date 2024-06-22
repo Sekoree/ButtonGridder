@@ -9,6 +9,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using AvaloniaEdit.Utils;
 using ButtonGridder.Entities;
+using ButtonGridder.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ButtonGridder.ViewModels;
@@ -19,14 +20,23 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty] private ButtonGridViewModel? _selectedButtonGrid;
 
-    private bool _isEditing = false;
+    private bool _isEditing;
 
     public MainViewModel()
     {
         var btnGrid = new ButtonGridViewModel(ButtonGrids);
         ButtonGrids.Add(btnGrid);
         SelectedButtonGrid = btnGrid;
-            
+        var btn = new TriggerButtonModel(btnGrid.Buttons, btnGrid.ButtonGrid)
+        {
+            Title = "Test Button",
+            GridColumn = 0,
+            GridRow = 0,
+            GridColumnSpan = 1,
+            GridRowSpan = 1,
+        };
+        btnGrid.Buttons.Add(btn);
+        EnableEditing();
     }
 
     public void EnableEditing()

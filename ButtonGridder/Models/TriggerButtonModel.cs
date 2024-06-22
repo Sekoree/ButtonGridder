@@ -9,10 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Avalonia.Themes.Fluent;
 using Avalonia.Threading;
 using AvaloniaEdit.Document;
 using ButtonGridder.Views;
@@ -22,7 +20,7 @@ namespace ButtonGridder.Models;
 
 public partial class TriggerButtonModel : ObservableObject
 {
-    private static HttpClient _httpClient = new();
+    private static readonly HttpClient Client = new();
 
     #region Postion / Basics
 
@@ -62,8 +60,8 @@ public partial class TriggerButtonModel : ObservableObject
     [ObservableProperty] private string _triggerUrl = string.Empty;
 
     [ObservableProperty] private HttpMethod _triggerHttpMethod = HttpMethod.Get;
-    
-    [ObservableProperty] private bool _hasBody = false;
+
+    [ObservableProperty] private bool _hasBody;
 
     [ObservableProperty] private TextDocument _triggerBody = new();
 
@@ -76,12 +74,12 @@ public partial class TriggerButtonModel : ObservableObject
     [ObservableProperty] private HttpStatusCode _triggerLastResponseCode = 0;
 
     [ObservableProperty] private string _triggerLastResponse = string.Empty;
-    
+
     [ObservableProperty] private string _triggerLastResponseTimes = string.Empty;
 
-#endregion
+    #endregion
 
-    [ObservableProperty] private bool _isEditing = false;
+    [ObservableProperty] private bool _isEditing;
 
     private readonly ObservableCollection<TriggerButtonModel> _parentCollection;
     private readonly Grid _parentGrid;
@@ -135,21 +133,6 @@ public partial class TriggerButtonModel : ObservableObject
         }
     }
 
-    public TriggerButtonModel(ObservableCollection<TriggerButtonModel> parentCollection, Grid parentGrid, Color background, Color title)
-    {
-        _parentCollection = parentCollection;
-        _parentGrid = parentGrid;
-        BackgroundPickerColor = background;
-        TitleColor = title;
-    }
-
-    [Obsolete("This constructor is for design-time only", true)]
-    public TriggerButtonModel()
-    {
-        _parentCollection = new ObservableCollection<TriggerButtonModel>();
-        _parentGrid = new Grid();
-    }
-
     public async Task Edit(Window parentWindow)
     {
         var editWindow = new AddEditTrigger
@@ -173,12 +156,13 @@ public partial class TriggerButtonModel : ObservableObject
         {
             var start = Stopwatch.GetTimestamp();
             var request = new HttpRequestMessage(TriggerHttpMethod, TriggerUrl);
-            if (HasBody) 
+            if (HasBody)
                 request.Content = new StringContent(TriggerBody.Text, Encoding.UTF8, TriggerBodyType);
             var endRequestBuild = Stopwatch.GetTimestamp();
-            var response = await _httpClient.SendAsync(request);
+            var response = await Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             var endRequest = Stopwatch.GetTimestamp();
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var endRead = Stopwatch.GetTimestamp();
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 TriggerLastResponseCode = response.StatusCode;
@@ -186,7 +170,9 @@ public partial class TriggerButtonModel : ObservableObject
                 var buildTime = TimeSpan.FromTicks(endRequestBuild - start).Milliseconds;
                 var requestTime = TimeSpan.FromTicks(endRequest - endRequestBuild).Milliseconds;
                 var totalTime = TimeSpan.FromTicks(endRequest - start).Milliseconds;
-                TriggerLastResponseTimes = $"Build: {buildTime}ms, Request: {requestTime}ms, Total: {totalTime}ms";
+                var responseTime = TimeSpan.FromTicks(endRead - endRequest).Milliseconds;
+                TriggerLastResponseTimes =
+                    $"Build: {buildTime}ms, Request: {requestTime}ms, Read: {responseTime}ms, Total: {totalTime}ms";
             });
         }
         catch (Exception e)

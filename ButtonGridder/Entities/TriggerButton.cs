@@ -17,14 +17,14 @@ public class TriggerButton
     public int GridRow { get; set; }
     public int GridColumnSpan { get; set; }
     public int GridRowSpan { get; set; }
-    public required string Title { get; set; }
-    public required string BackgroundColor { get; set; }
+    public string Title { get; set; } = "A Button";
+    public string BackgroundColor { get; set; } = string.Empty;
     public string TitleColor { get; set; } = string.Empty;
     public int TitleFontSize { get; set; } = 16;
     public string TitleFontFamily { get; set; } = string.Empty;
-    public required string TriggerUrl { get; set; }
-    public required string TriggerHttpMethod { get; set; }
-    public bool HasBody { get; set; } = false;
+    public string TriggerUrl { get; set; } = string.Empty;
+    public string TriggerHttpMethod { get; set; } = "GET";
+    public bool HasBody { get; set; }
     public string TriggerBody { get; set; } = string.Empty;
     public string TriggerBodyType { get; set; } = string.Empty;
     
@@ -61,7 +61,7 @@ public class TriggerButton
         var titleColor = Color.Parse(button.TitleColor);
         var fontFamily = FontManager.Current.SystemFonts.FirstOrDefault(f => f.Name == button.TitleFontFamily) ??
                          FontManager.Current.DefaultFontFamily;
-        var method = HttpMethod.Parse(button.TriggerHttpMethod);
+        var method = new HttpMethod(button.TriggerHttpMethod);
         return new TriggerButtonModel(parent, parentGrid)
         {
             GridColumn = button.GridColumn,

@@ -11,10 +11,6 @@
         Height="500"
         x:DataType="models:TriggerButtonModel">
 
-    <Design.DataContext>
-        <models:TriggerButtonModel />
-    </Design.DataContext>
-
     <ScrollViewer HorizontalScrollBarVisibility="Auto">
         <Grid ColumnDefinitions="*, *"
               RowDefinitions="Auto, Auto">
